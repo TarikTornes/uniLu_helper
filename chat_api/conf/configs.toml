@@ -1,0 +1,13 @@
+[general]
+device = "mps"
+
+[generation]
+model = "models/Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf"
+
+[embedding]
+model = "jinaai/jina-embeddings-v2-base-en"
+
+[retrieval]
+k_nearest = 10
+history = 5
+
