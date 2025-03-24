@@ -8,27 +8,29 @@ import faiss, re
 
 class IndexDB:
 
-    def __init__(self, embeddings_path, embeddings, chunks_dict, web_page_dict):
+    def __init__(self, embeddings_path, chunks_dict, embeddings):
 
         check_device()
         self.embeddings_config = AutoConfig.from_pretrained(embeddings_path)
         self.embeddings_model = AutoModel.from_pretrained(embeddings_path, trust_remote_code=True, device_map="auto")
         check_device()
-
+        self.embeddings = embeddings["embeddings"]
+        self.chunks_dict = chunks_dict["chunks_dict"]
+        self.web_page_dict = chunks_dict["web_page_dict"]
 
         self.hidden_size = self.embeddings_config.hidden_size
+        print(self.hidden_size)
 
         self.index = faiss.IndexFlatL2(self.hidden_size)
-        self.index.add(embeddings)
-        self.embeddings = embeddings
-        self.chunks_dict = chunks_dict
-        self.web_page_dict = web_page_dict
+        
+        self.index.add(self.embeddings)
+
         log("INFO", "Query: EmbeddingDB successfully loaded")
         check_device()
 
 
 
-    def get_k_Results(self, QUERY, k):
+    def get_k_results(self, QUERY, k):
         results = []
 
         query = self.embeddings_model.encode([QUERY])

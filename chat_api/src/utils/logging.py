@@ -1,11 +1,11 @@
 import datetime
-from .load_configs import load_configs
+from .load_resources import load_configs
 
 
 def log(category, message):
     cfg = load_configs()
-    log_file = cfg["General"]["log_file"]
-    chunk_file = cfg["General"]["chunk_file"]
+    log_file = cfg.general.logs
+    chunk_file = cfg.general.chunks
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     if category == "QUERY_RESULTS":

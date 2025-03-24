@@ -1,8 +1,10 @@
 [general]
 device = "mps"
+logs = "../logs/logs"
+chunks = "../logs/chunks"
 
 [generation]
-model = "models/Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf"
+model = "llama-3.3-70b-versatile"
 
 [embedding]
 model = "jinaai/jina-embeddings-v2-base-en"

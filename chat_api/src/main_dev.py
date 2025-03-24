@@ -1,35 +1,28 @@
-from fastapi import FastAPI
 from index import IndexDB
-from model import Gen_Model
 from utils import load_configs, load_data
-from dotenv import load_dotenv
-import os
 
 
 
 settings = load_configs()
 chunks, embeddings = load_data()
-load_dotenv()
 
-app = FastAPI()
 print(settings.embedding.model)
 index = IndexDB(settings.embedding.model, chunks, embeddings)
-model = Gen_Model(settings.generation.model, os.getenv("API_KEY"))
 
 
-@app.get("/")
 def ask_bot(session_id: int, query: str):
     
     #history = get_history()
 
-    context = index.get_k_results(query, settings.retrieval.k_nearest)
+    context = index.get_k_results(query, 10)
 
-    response = model.get_response(context, query)
+    # response = get_response(history, context, query)
 
-    return {"session_id": session_id, "text": response}
+    return {"session_id": session_id, "text": context}
 
 
-@app.get("/close_session")
 def close_session(session_id: int):
     return {"msg": f"Session {session_id} was successfully closed!"}
 
+
+ask_bot(200, "Who is the director of the University of Luxembourg")
