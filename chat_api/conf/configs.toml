@@ -11,5 +11,11 @@ model = "jinaai/jina-embeddings-v2-base-en"
 
 [retrieval]
 k_nearest = 10
-history = 5
+history = 10
+model = "llama-3.1-8b-instant"
+
+[session]
+host="localhost"
+port=6379
+expiry=20
 
