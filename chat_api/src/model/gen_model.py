@@ -10,7 +10,7 @@ class Gen_Model:
         self.path = path
 
 
-    def get_formatted_prompt(self, instruction, input=None):
+    def get_formatted_prompt(self, instruction, input=None, chat_history=None):
         message = [{
             "role": "system",
             "content": 
@@ -31,32 +31,35 @@ class Gen_Model:
                     [Concise answer addressing the instruction]
                     Learn more: [URL]
                     ## Response format for unclear or insufficient information:
-                    Sorry, I don't have enough information to fully answer your question. You may find relevant details here: [URL]
+                    Sorry, I don't have enough information to fully answer your question. 
+                    You may find relevant details here: [URL]
 
-                    """},
+                    """}]
 
-                   {
-            "role": "user",
-            "content": 
-                   f""" 
-                    Answer the following instruction using only information from the provided documents if they are relevant.
+        if chat_history:
+            message.extend(chat_history)
 
-                    ## Input: {input}
+        message.append({"role": "user",
+                        "content": 
+                        f"""Answer the following instruction using only information from the provided documents if they are relevant.
 
-                    ## Instruction:\n {instruction}
-                   """
-                   }]
+                        ## Input: {input}
+
+                        ## Instruction:\n {instruction}"""
+                        })
            
         return message
 
 
-    def get_response(self, query_results, INSTRUCTION, MAX_TOKENS=1024):
+    def get_response(self, query_res, INSTRUCTION, chat_history, MAX_TOKENS=1024):
 
         chat_completion = self.model.chat.completions.create(
-                            messages=self.get_formatted_prompt(instruction=INSTRUCTION, input=query_results),
+                            messages=self.get_formatted_prompt(instruction=INSTRUCTION, input=query_res, chat_history=chat_history),
                             model=self.path,
                             max_completion_tokens=MAX_TOKENS,
                             stream=False)
-        print(chat_completion.choices[0].message.content)
-        return chat_completion.choices[0].message.content
+        response = chat_completion.choices[0].message.content
+
+
+        return response
 
