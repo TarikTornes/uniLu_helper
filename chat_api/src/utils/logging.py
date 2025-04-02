@@ -4,8 +4,8 @@ from .load_resources import load_configs
 
 def log(category, message):
     cfg = load_configs()
-    log_file = cfg.general.logs
-    chunk_file = cfg.general.chunks
+    log_file = cfg["general"]["logs"]
+    chunk_file = cfg["general"]["chunks"]
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     if category == "QUERY_RESULTS":

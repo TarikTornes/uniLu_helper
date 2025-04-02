@@ -1,8 +1,9 @@
-from dynaconf import Dynaconf
-import pickle
+import pickle, toml
 
 def load_configs():
-    return Dynaconf(settings_file=["../conf/configs.toml"])
+    with open('../conf/configs.toml') as f:
+        config = toml.load(f)
+    return config
 
 def load_data():
     with open("../data/embeddings.pkl", "rb") as f:
