@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from index import IndexDB
-from model import Gen_Model
+from chats import ChatDB
+from model import Gen_Model, QueryModel
 from utils import load_configs, load_data
 from dotenv import load_dotenv
 import os
@@ -12,19 +13,28 @@ chunks, embeddings = load_data()
 load_dotenv()
 
 app = FastAPI()
-print(settings.embedding.model)
-index = IndexDB(settings.embedding.model, chunks, embeddings)
-model = Gen_Model(settings.generation.model, os.getenv("API_KEY"))
+index = IndexDB(settings["embedding"]["model"], chunks, embeddings)
+model = Gen_Model(settings["generation"]["model"], os.getenv("API_KEY"))
+query_opt = QueryModel(settings["generation"]["model"], os.getenv("API_KEY_QUERY"))
+chat = ChatDB(host=settings["session"]["host"],
+              port=settings["session"]["port"], 
+              passwd=os.getenv("PASSWD_REDIS"), 
+              dec_resp=True, expiry= settings["session"]["expiry"]*60)
 
 
 @app.get("/")
 def ask_bot(session_id: int, query: str):
     
-    #history = get_history()
+    history = chat.get_history(session_id)
 
-    context = index.get_k_results(query, settings.retrieval.k_nearest)
+    opt_query = query_opt.opt_query(query, history)
 
-    response = model.get_response(context, query)
+    context = index.get_k_results(opt_query, settings["retrieval"]["k_nearest"])
+
+    response = model.get_response(query_res=context, INSTRUCTION=query, chat_history=history)
+
+    chat.add_message(session_id, query, "user")
+    chat.add_message(session_id, response, "assistant")
 
     return {"session_id": session_id, "text": response}
 
