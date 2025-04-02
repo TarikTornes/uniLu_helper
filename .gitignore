@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 *main_dev.py
 *logs/
+redis.conf
 
 # C extensions
 *.so
