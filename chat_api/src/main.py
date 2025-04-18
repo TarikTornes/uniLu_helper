@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from index import IndexDB
+from index import IndexDB2
 from chats import ChatDB
 from model import Gen_Model, QueryModel
 from utils import load_configs, load_data
@@ -13,7 +13,7 @@ chunks, embeddings = load_data()
 load_dotenv()
 
 app = FastAPI()
-index = IndexDB(settings["embedding"]["model"], chunks, embeddings)
+index = IndexDB2(settings["embedding"]["model"], chunks, embeddings)
 model = Gen_Model(settings["generation"]["model"], os.getenv("API_KEY"))
 query_opt = QueryModel(settings["generation"]["model"], os.getenv("API_KEY_QUERY"))
 chat = ChatDB(host=settings["session"]["host"],
