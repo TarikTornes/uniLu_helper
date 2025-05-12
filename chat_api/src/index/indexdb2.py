@@ -45,7 +45,7 @@ class IndexDB2:
 
         D, I = self.index.search(query, k)
 
-        log("QUERY", None, QUERY)
+        #log("QUERY", None, QUERY)
 
         for i, j in enumerate(I[0]):
             vec = self.embeddings[j]
@@ -53,7 +53,7 @@ class IndexDB2:
             web_link = self.web_page_dict[j]
             results.append((j, chunk, web_link))
             mess = f'Top: {i}, Chunk: {j}\nSimilarity:  {round(D[0][i], 3)}\n\n {self.chunks_dict[j]}'
-            log("QUERY_RESULTS", mess + f"\n URL: {web_link}")
+            #log("QUERY_RESULTS", mess + f"\n URL: {web_link}")
 
         return results
 
