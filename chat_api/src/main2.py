@@ -10,7 +10,6 @@ from dotenv import load_dotenv
 import os
 
 
-
 settings = load_configs()
 chunks, embeddings = load_data()
 load_dotenv()

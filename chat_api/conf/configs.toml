@@ -1,7 +1,7 @@
 [general]
 device = "mps"
-logs = "../logs/logs"
-chunks = "../logs/chunks"
+logs = "logs/logs"
+chunks = "logs/chunks"
 
 [generation]
 model = "llama-3.3-70b-versatile"

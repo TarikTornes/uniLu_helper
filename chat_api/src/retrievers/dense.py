@@ -25,4 +25,3 @@ class DenseRetriever(BaseRetriever):
         # returns a list of tuples [(idx1, score1), (idx2,score2), ...]
         return list(zip(indices[0].tolist(), scores[0].tolist()))
 
-

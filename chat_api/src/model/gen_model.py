@@ -47,6 +47,7 @@ class Gen_Model:
 
                         ## Instruction:\n {instruction}"""
                         })
+        # print(message)
            
         return message
 
