@@ -47,6 +47,7 @@ def ask_bot(session_id: int, query: str):
         context.append((doc_id, chunk, web_link, score))
 
     log_query(context, opt_query)
+    log_query(context=context, query=opt_query, overwrite=True)
 
     response = model.get_response(query_res=context, INSTRUCTION=query, chat_history=history)
 

@@ -12,9 +12,14 @@ def log(category, message):
         file.write(log_entry)
 
 
-def log_query(context, query=None, sep_len= 95, wrap_long_lines=True):
+def log_query(context, query=None, sep_len= 95, wrap_long_lines=True, overwrite=False):
     cfg = load_configs()
-    chunk_file = cfg["general"]["chunks"]
+    if overwrite:
+        chunk_file = cfg["general"]["chunks_last"]
+        write_mode = 'w'
+    else:
+        chunk_file = cfg["general"]["chunks_all"]
+        write_mode = 'a'
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 
@@ -38,7 +43,7 @@ def log_query(context, query=None, sep_len= 95, wrap_long_lines=True):
         
     block.extend(['o', separator, '\n', format_documents(context)])
 
-    with open(chunk_file, 'a') as file:
+    with open(chunk_file, write_mode) as file:
         file.write("\n".join(block) + "\n")
 
 
