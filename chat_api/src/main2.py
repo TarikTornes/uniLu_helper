@@ -19,7 +19,7 @@ app = FastAPI()
 document_store = DocStore(chunks["chunks_dict"], chunks["web_page_dict"])
 dense_retriever = DenseRetriever(settings["embedding"]["model"], embeddings["embeddings"])
 bm25_retriever = BM25Retriever([chunks["chunks_dict"][i] for i in sorted(chunks["chunks_dict"])])
-reranker = RRFusion()
+reranker = RRFusion(35)
 hybrid_retriever = HybridRetriever([dense_retriever, bm25_retriever], reranker)
 
 model = Gen_Model(settings["generation"]["model"], os.getenv("API_KEY"))

@@ -15,9 +15,6 @@ class HybridRetriever(BaseRetriever):
                 results = retriever.retrieve(query, k * 2)
                 all_results.append(results)
 
-        print(all_results)
-        print()
-        print(type(all_results))
         reranked_results = self.reranker.rerank(all_results, 10)
 
 
