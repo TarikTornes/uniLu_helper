@@ -1,4 +1,5 @@
 from groq import Groq
+import json
 
 PROMPT_SYSTEM_REWRITE = """You are a query optimization assistant. Your task is to refine the user’s input into a concise, unambiguous, and context-rich query optimized for similarity search in a RAG-based chatbot.
 ## Instructions:
@@ -12,9 +13,13 @@ PROMPT_SYSTEM_REWRITE = """You are a query optimization assistant. Your task is 
 - Structure: Output only the optimized queries in the format of the following JSON example below.
 
 ## JSON-Format
-'{"optimized_queries": ["This is example query 1!", 
-                        "This is example query 2!", 
-                        "And this is example query 3!]}
+'{
+    "optimized_queries": [
+        "This is example query 1!", 
+        "This is example query 2!", 
+        "And this is example query 3!
+    ]
+}
 
 '
 
@@ -32,11 +37,6 @@ PROMPT_USER = """Improve the user query using the previous chat history if relev
 - Return only the optimized queries in the specified JSON-format"""
 
 
-
-
-
-
-
 class QueryModel():
 
     def __init__(self, path, api_key):
@@ -44,7 +44,7 @@ class QueryModel():
         self.path = path
 
 
-    def opt_query(self, query, chat_history=None, MAX_TOKENS=128):
+    def opt_query(self, query, chat_history=None, MAX_TOKENS=128, MAX_QUERIES=3) -> list[str]:
 
         message = [{"role": "system",
                     "content": PROMPT_SYSTEM_REWRITE}]
@@ -64,7 +64,11 @@ class QueryModel():
 
         response = chat_completion.choices[0].message.content
 
-        return response
+        data = json.loads(response)
+
+        queries = data["optimized_queries"]
+
+        return queries[:MAX_QUERIES]
 
 
 

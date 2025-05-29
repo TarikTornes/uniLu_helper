@@ -30,7 +30,6 @@ chat = ChatDB(host=settings["session"]["host"],
               dec_resp=True, expiry= settings["session"]["expiry"]*60)
 
 
-@app.get("/")
 def ask_bot(session_id: int, query: str):
     
     history = chat.get_history(session_id)
@@ -59,7 +58,8 @@ def ask_bot(session_id: int, query: str):
     return {"session_id": session_id, "text": response}
 
 
-@app.get("/close_session")
 def close_session(session_id: int):
     return {"msg": f"Session {session_id} was successfully closed!"}
 
+
+print(ask_bot(50, "What are teh Faculties at the university of luxembourg?"))
