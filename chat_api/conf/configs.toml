@@ -11,8 +11,8 @@ model = "llama-3.3-70b-versatile"
 model = "jinaai/jina-embeddings-v2-base-en"
 
 [retrieval]
-k_nearest = 10
-history = 10
+k_nearest = 15
+history = 15
 model = "llama-3.1-8b-instant"
 
 [session]

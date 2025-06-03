@@ -13,7 +13,7 @@ class HybridRetriever(BaseRetriever):
         self.lambda_mmr = lambda_mmr
     
 
-    def retrieve(self, queries: list[str], k: int = 10) -> list[tuple[int, float]]:
+    def retrieve(self, queries: list[str], k: int = 15) -> list[tuple[int, float]]:
 
         all_results = []
         for retriever in self.retrievers:
