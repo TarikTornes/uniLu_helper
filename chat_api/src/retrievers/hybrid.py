@@ -6,7 +6,7 @@ class HybridRetriever(BaseRetriever):
     def __init__(self, retrievers: list[BaseRetriever], 
                  reranker, 
                  dense_retr,
-                 lambda_mmr: float=0.7):
+                 lambda_mmr: float=0.4):
         self.retrievers = retrievers
         self.reranker = reranker
         self.dense = dense_retr
