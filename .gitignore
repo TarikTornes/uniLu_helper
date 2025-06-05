@@ -6,6 +6,7 @@ __pycache__/
 *logs/
 redis.conf
 *.pkl
+chat_api/data/bak/
 
 # C extensions
 *.so
