@@ -63,5 +63,5 @@ def ask_bot(session_id:int, query: str):
 
 '''
 
-print(ask_bot(200, "What major interdisciplinary research projects involve both SnT and the Faculty of Law, Economics and Finance (FDEF)?"))
-print(ask_bot(200, "Who is Martin Theobald?"))
+print(ask_bot(200, "What faculties are there at the uni?"))
+print(ask_bot(200, "Who are their Deans?"))
