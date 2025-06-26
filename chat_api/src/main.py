@@ -1,8 +1,7 @@
 from fastapi import FastAPI
-from index import IndexDB2
 
 from retrievers import DenseRetriever, BM25Retriever, HybridRetriever, RRFusion
-from utils import DocStore
+from utils import DocStore, log_query
 
 from chats import ChatDB
 from model import Gen_Model, QueryModel
@@ -11,13 +10,19 @@ from dotenv import load_dotenv
 import os
 
 
-
 settings = load_configs()
 chunks, embeddings = load_data()
 load_dotenv()
 
 app = FastAPI()
-index = IndexDB2(settings["embedding"]["model"], chunks, embeddings)
+
+document_store = DocStore(chunks["chunks_dict"], chunks["web_page_dict"])
+dense_retriever = DenseRetriever(settings["embedding"]["model"], embeddings["embeddings"])
+dense_retr_mmr = DenseRetriever(settings["embedding"]["model"], embeddings["embeddings"])
+bm25_retriever = BM25Retriever([chunks["chunks_dict"][i] for i in sorted(chunks["chunks_dict"])])
+reranker = RRFusion(35)
+hybrid_retriever = HybridRetriever([dense_retriever, bm25_retriever], reranker, dense_retr_mmr)
+
 model = Gen_Model(settings["generation"]["model"], os.getenv("API_KEY"))
 query_opt = QueryModel(settings["generation"]["model"], os.getenv("API_KEY_QUERY"))
 chat = ChatDB(host=settings["session"]["host"],
@@ -31,9 +36,21 @@ def ask_bot(session_id: int, query: str):
     
     history = chat.get_history(session_id)
 
-    opt_query = query_opt.opt_query(query, history)
+    opt_queries = query_opt.opt_query(query, history)
+    
+    doc_scores = hybrid_retriever.retrieve(opt_queries, settings["retrieval"]["k_nearest"])
+    context = []
 
-    context = index.get_k_results(opt_query, settings["retrieval"]["k_nearest"])
+    for doc_id, score in doc_scores:
+        chunk = document_store.get_chunk(doc_id)
+        web_link = document_store.get_url(doc_id)
+        context.append((doc_id, chunk, web_link, score))
+
+    log_query(context, opt_queries, query)
+    log_query(context=context, 
+              opt_queries=opt_queries, 
+              og_query=query, 
+              overwrite=True)
 
     response = model.get_response(query_res=context, INSTRUCTION=query, chat_history=history)
 
