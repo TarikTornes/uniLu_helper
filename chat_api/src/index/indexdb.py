@@ -1,6 +1,6 @@
-import src.utils
-from src.utils import log
-from src.utils import check_device
+import utils
+from utils import log
+from utils import check_device
 
 from transformers import AutoConfig, AutoModel
 import faiss, re

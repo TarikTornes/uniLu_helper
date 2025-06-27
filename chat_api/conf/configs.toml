@@ -1,7 +1,8 @@
 [general]
 device = "mps"
-logs = "logs/logs"
-chunks = "logs/chunks"
+logs = "../logs/logs"
+chunks_all = "../logs/chunks_all"
+chunks_last = "../logs/chunks_last"
 
 [generation]
 model = "llama-3.3-70b-versatile"
@@ -11,7 +12,7 @@ model = "jinaai/jina-embeddings-v2-base-en"
 
 [retrieval]
 k_nearest = 10
-history = 10
+history = 15
 model = "llama-3.1-8b-instant"
 
 [session]

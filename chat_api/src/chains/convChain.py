@@ -1,4 +1,4 @@
-from src.utils import log_query
+from utils import log_query
 
 class ConvChain:
 
@@ -7,6 +7,7 @@ class ConvChain:
         self.retriever = retriever
         self.history = []
         self.document_store = doc_store
+        self.retrieved_ids = []
 
     def get_response(self, query, k):
         hist = self.get_hist(5)
@@ -38,8 +39,14 @@ class ConvChain:
             chunk = self.document_store.get_chunk(doc_id)
             web_link = self.document_store.get_url(doc_id)
             context.append((doc_id, chunk, web_link, score))
+            self.retrieved_ids.append(doc_id)
 
-        log_query(context, query)
+        log_query(context, [query], query)
+        log_query(context=context, 
+                  opt_queries=[query], 
+                  og_query=query, 
+                  overwrite=True)
+
 
         return context
 

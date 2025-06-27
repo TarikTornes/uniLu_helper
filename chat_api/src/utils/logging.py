@@ -12,16 +12,26 @@ def log(category, message):
         file.write(log_entry)
 
 
-def log_query(context, query=None, sep_len= 95, wrap_long_lines=True):
+def log_query(context, 
+              opt_queries=None, 
+              og_query=None, 
+              sep_len= 95, 
+              wrap_long_lines=True, 
+              overwrite=False):
+
     cfg = load_configs()
-    chunk_file = cfg["general"]["chunks"]
+    if overwrite:
+        chunk_file = cfg["general"]["chunks_last"]
+        write_mode = 'w'
+    else:
+        chunk_file = cfg["general"]["chunks_all"]
+        write_mode = 'a'
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 
     separator = '#' * sep_len
-    separator = separator + "\n" + separator
-    block = [separator, 'o', f'o {timestamp}', 'o']
-    for line in query.splitlines() or ['']:
+    block = [separator, separator, 'o', f'o {timestamp}', 'o']
+    for line in og_query.splitlines() or ['']:
         if wrap_long_lines:
             wrapped = textwrap.wrap(line,
                                     width=sep_len - 2,
@@ -35,10 +45,32 @@ def log_query(context, query=None, sep_len= 95, wrap_long_lines=True):
                     block.append(f'o {segment}')
         else:
             block.append(f'o {line}')
+
+    block.extend(['o', separator, 'OPTIMIZED QUERIES'])
+
+    for idx, q in enumerate(opt_queries, start=1):
+        prefix = f'{idx}. '
+        if wrap_long_lines:
+                wrapped = textwrap.wrap(q,
+                                        width=sep_len - len(prefix),
+                                        replace_whitespace=False,
+                                        drop_whitespace=False,
+                                        break_long_words=True)
+                if not wrapped:
+                    block.append(f'{prefix}')
+                else:
+                    for i, segment in enumerate(wrapped):
+                        if i == 0:
+                            block.append(f'{prefix}{segment}')
+                        else:
+                            block.append(f'{" " * len(prefix)}{segment}')
+        else:
+                block.append(f'{prefix}{q}')
+
         
     block.extend(['o', separator, '\n', format_documents(context)])
 
-    with open(chunk_file, 'a') as file:
+    with open(chunk_file, write_mode) as file:
         file.write("\n".join(block) + "\n")
 
 

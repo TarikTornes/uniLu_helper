@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 
 from retrievers import DenseRetriever, BM25Retriever, HybridRetriever, RRFusion
-from utils import DocStore, log_query
+from utils import DocStore, log_query, Benchmark_UniBot
+
 
 from chats import ChatDB
 from model import Gen_Model, QueryModel
@@ -18,8 +19,9 @@ app = FastAPI()
 
 document_store = DocStore(chunks["chunks_dict"], chunks["web_page_dict"])
 dense_retriever = DenseRetriever(settings["embedding"]["model"], embeddings["embeddings"])
+dense_retr_mmr = DenseRetriever(settings["embedding"]["model"], embeddings["embeddings"])
 bm25_retriever = BM25Retriever([chunks["chunks_dict"][i] for i in sorted(chunks["chunks_dict"])])
-reranker = RRFusion()
+reranker = RRFusion(35)
 hybrid_retriever = HybridRetriever([dense_retriever, bm25_retriever], reranker)
 
 model = Gen_Model(settings["generation"]["model"], os.getenv("API_KEY"))
@@ -29,33 +31,30 @@ chat = ChatDB(host=settings["session"]["host"],
               passwd=os.getenv("PASSWD_REDIS"), 
               dec_resp=True, expiry= settings["session"]["expiry"]*60)
 
-
-@app.get("/")
-def ask_bot(session_id: int, query: str):
-    
-    history = chat.get_history(session_id)
-
-    opt_query = query_opt.opt_query(query, history)
-    
-    doc_scores = hybrid_retriever.retrieve(opt_query, settings["retrieval"]["k_nearest"])
-    context = []
-
-    for doc_id, score in doc_scores:
-        chunk = document_store.get_chunk(doc_id)
-        web_link = document_store.get_url(doc_id)
-        context.append((doc_id, chunk, web_link, score))
-
-    log_query(context, opt_query)
-
-    response = model.get_response(query_res=context, INSTRUCTION=query, chat_history=history)
-
-    chat.add_message(session_id, query, "user")
-    chat.add_message(session_id, response, "assistant")
-
-    return {"session_id": session_id, "text": response}
+manifest = None
+quers= {}
 
 
-@app.get("/close_session")
-def close_session(session_id: int):
-    return {"msg": f"Session {session_id} was successfully closed!"}
+def run_bench():
 
+    bench = Benchmark_UniBot(settings,
+                            query_opt,
+                            model,
+                            chat,
+                            document_store,
+                            hybrid_retriever)
+
+    bench.load_gold("../data/benchmark/gold_equivalence.json")
+    bench.load_manifest("../data/benchmark/queries_manifest.json")
+
+    res_dict = bench.run_benchmark(10)
+
+    mean_precision = sum(qres for qres in res_dict["prec"]) / len(res_dict["prec"])
+    mean_recall= sum(qres for qres in res_dict["recall"]) / len(res_dict["recall"])
+
+    print("Precision:  ", mean_precision)
+    print("Recall:  ", mean_recall)
+
+
+
+run_bench()
