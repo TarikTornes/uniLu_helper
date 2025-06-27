@@ -39,7 +39,7 @@ class QueryModel():
 
         response = chat_completion.choices[0].message.content
 
-        return response
+        return [response]
 
 
 

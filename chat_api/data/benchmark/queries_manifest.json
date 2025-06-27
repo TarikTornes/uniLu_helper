@@ -1,0 +1,63 @@
+{
+    "Q1": {
+        "type": "single",
+        "query_text": "What documents do I need in order to apply for a Bachelor?"
+    },
+    "Q2": {
+        "type": "single",
+        "query_text": "How much is the semester registration fee?"
+    },
+    "Q3": {
+        "type": "single",
+        "query_text": "Show me the Belval campus map."
+    },
+    "Q4": {
+        "type": "single",
+        "query_text": "When is the Luxembourg Learning Centre open on Sundays?"
+    },
+    "Q5": {
+        "type": "single",
+        "query_text": "Am I eligible for on-campus housing, and how do I apply?"
+    },
+    "Q6": {
+        "type": "single",
+        "query_text": "What is the cost of living in Luxembourg?"
+    },
+    "Q7": {
+        "type": "single",
+        "query_text": "How can I print something at the university?"
+    },
+    "Q8": {
+        "type": "single",
+        "query_text": "What major interdisciplinary research projects involve both SnT and the Faculty of Law, Economics and Finance (FDEF)?"
+    },
+    
+    "Q9": {
+        "type": "multi",
+        "query_text": "I am starting my Bachelor in Physics. Do I need to go on Mobility?",
+        "query_followup": "Where can I go on Mobility?"
+    },
+
+    "Q10": {
+        "type": "multi",
+        "query_text": "What are the tuition fees?",
+        "query_followup": "How can I pay it?"
+    },
+    "Q11": {
+        "type": "multi",
+        "query_text": "What faculties are there at the university?",
+        "query_followup": "Who are their Deans?"
+
+    },
+    "Q12": {
+        "type": "multi",
+        "query_text": "I have finished my Bachelor in Computer Science and would like to pursue a Master at this university can you recommend some options?",
+        "query_followup": "Please give me a brief summary on each of them!"
+    },
+    "Q13": {
+        "type": "multi",
+        "query_text": "What bachelors related to computer science are there at the university?",
+        "query_followup": "What is the difference between them?"
+
+    }
+}

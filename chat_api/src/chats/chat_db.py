@@ -18,3 +18,8 @@ class ChatDB():
         chats = self.client.lrange(session_key, -10, -1)
         return [json.loads(msg) for msg in chats]
 
+    def kill_session_history(self, session_key: int):
+        """
+        Deletes all chat history associated with the given session_key.
+        """
+        self.client.delete(session_key)
