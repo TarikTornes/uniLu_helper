@@ -4,3 +4,4 @@ from .check_device import check_device
 from .logging import log, log_query
 from .doc_store import DocStore
 from .format_docs import format_documents
+from .benchmark_utils import Benchmark_UniBot
