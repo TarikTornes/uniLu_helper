@@ -47,14 +47,28 @@ def run_bench():
     bench.load_gold("../data/benchmark/gold_equivalence.json")
     bench.load_manifest("../data/benchmark/queries_manifest.json")
 
-    res_dict = bench.run_benchmark(10)
+    ks = [3,5,10,15,20]
+    results_at_k = {}
 
-    mean_precision = sum(qres for qres in res_dict["prec"]) / len(res_dict["prec"])
-    mean_recall= sum(qres for qres in res_dict["recall"]) / len(res_dict["recall"])
+    for k in ks:
+        res_dict = {}
+        res_dict = bench.run_benchmark(k)
 
-    print("Precision:  ", mean_precision)
-    print("Recall:  ", mean_recall)
+        mean_precision = sum(qres for qres in res_dict["prec"]) / len(res_dict["prec"])
+        mean_recall= sum(qres for qres in res_dict["recall"]) / len(res_dict["recall"])
 
+
+        print(f'-----------------   K = {k}  -------------------------')
+        print("Precision:  ", mean_precision)
+        print("Recall:  ", mean_recall)
+        print(f'------------------------------------------------------')
+
+        results_at_k[k] = (mean_precision,mean_recall)
+
+
+    print()
+    print()
+    print(results_at_k)
 
 
 run_bench()
