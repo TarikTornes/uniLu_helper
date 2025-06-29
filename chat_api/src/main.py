@@ -62,5 +62,12 @@ def ask_bot(session_id: int, query: str):
 
 @app.get("/close_session")
 def close_session(session_id: int):
+    chat.kill_session_history(session_id)
     return {"msg": f"Session {session_id} was successfully closed!"}
+
+
+@app.get("/get_chathistory")
+def get_chathistory(session_id: int):
+    chat_hist = chat.get_all_history(session_id)
+    return chat_hist
 
