@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from retrievers import DenseRetriever, BM25Retriever, HybridRetriever, RRFusion
 from utils import DocStore, log_query
@@ -15,6 +16,14 @@ chunks, embeddings = load_data()
 load_dotenv()
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 document_store = DocStore(chunks["chunks_dict"], chunks["web_page_dict"])
 dense_retriever = DenseRetriever(settings["embedding"]["model"], embeddings["embeddings"])
@@ -57,6 +66,8 @@ def ask_bot(session_id: int, query: str):
     chat.add_message(session_id, query, "user")
     chat.add_message(session_id, response, "assistant")
 
+    print("MESSAGE SEND!!")
+    print(response)
     return {"session_id": session_id, "text": response}
 
 
