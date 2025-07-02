@@ -28,6 +28,7 @@ def ask_bot(session_id: int, query: str):
     history = chat.get_history(session_id)
 
     opt_query = query_opt.opt_query(query, history)
+    print(opt_query)
 
     context = index.get_k_results(opt_query, settings["retrieval"]["k_nearest"])
 
