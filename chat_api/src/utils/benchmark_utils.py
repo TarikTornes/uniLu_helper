@@ -89,7 +89,7 @@ class Benchmark_UniBot:
             og_query = query_obj["query_followup"]
             opt_queries = self.query_opt.opt_query(og_query,history)
 
-        doc_scores = self.retriever.retrieve(opt_queries[0], self.settings["retrieval"]["k_nearest"])
+        doc_scores = self.retriever.retrieve(opt_queries[0], k)
 
         context = []
 

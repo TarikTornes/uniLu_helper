@@ -52,7 +52,7 @@ def run_bench():
     bench.load_manifest("../data/benchmark/queries_manifest.json")
 
 
-    ks = [3,5,10,15,20]
+    ks = [1,3,5,10,15,20]
     results_at_k = {}
 
     for k in ks:
