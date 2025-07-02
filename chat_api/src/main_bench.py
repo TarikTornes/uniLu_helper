@@ -47,7 +47,7 @@ def run_bench():
     bench.load_gold("../data/benchmark/gold_equivalence.json")
     bench.load_manifest("../data/benchmark/queries_manifest.json")
 
-    ks = [3,5,10,15,20]
+    ks = [1,3,5,10,15,20]
     results_at_k = {}
 
     for k in ks:
