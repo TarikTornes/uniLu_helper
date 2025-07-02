@@ -18,10 +18,10 @@ class HybridRetriever(BaseRetriever):
         all_results = []
         for retriever in self.retrievers:
             for query in queries:
-                results = retriever.retrieve(query, k * 2)
+                results = retriever.retrieve(query, max(20,k*2))
                 all_results.append(results)
 
-        reranked = self.reranker.rerank(all_results, min(k * 5, k*2))
+        reranked = self.reranker.rerank(all_results, k)
 
         seen_doc_ids = set()
         unique_res = []

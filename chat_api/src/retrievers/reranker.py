@@ -1,6 +1,6 @@
 
 class RRFusion:
-    def __init__(self, k: int = 60):
+    def __init__(self, k: int = 20):
         self.k = k
 
     def rerank(self, all_results: list[list[tuple[int, float]]], top_k: int) -> list[tuple[int,float]] :
