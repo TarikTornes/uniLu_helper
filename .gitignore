@@ -6,6 +6,7 @@ __pycache__/
 *logs/
 redis.conf
 *.pkl
+*.bak
 
 # C extensions
 *.so
