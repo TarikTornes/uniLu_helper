@@ -26,5 +26,6 @@ Method 3 + Maximal Margin Relevance Layer
   - create .env with `GROQ_API_KEY`
 
 ## Run
+- run the docker container in order to start the redis database except for branch test2 this safes the history in memory
 - got into src folder
 - run: `fastapi dev main.py`to start the server
