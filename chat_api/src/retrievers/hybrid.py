@@ -62,6 +62,9 @@ class HybridRetriever(BaseRetriever):
 
         return [(candidates_ids[i], scores[i]) for i in selected]
 
+    def set_lambda(self,l):
+        self.lambda_mmr = l
+
 
 
 

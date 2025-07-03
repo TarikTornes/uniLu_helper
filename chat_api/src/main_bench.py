@@ -22,7 +22,7 @@ dense_retriever = DenseRetriever(settings["embedding"]["model"], embeddings["emb
 dense_retr_mmr = DenseRetriever(settings["embedding"]["model"], embeddings["embeddings"])
 bm25_retriever = BM25Retriever([chunks["chunks_dict"][i] for i in sorted(chunks["chunks_dict"])])
 reranker = RRFusion(35)
-hybrid_retriever = HybridRetriever([dense_retriever, bm25_retriever], reranker, dense_retr_mmr)
+hybrid_retriever = HybridRetriever([dense_retriever, bm25_retriever], reranker, dense_retr_mmr,0.2)
 
 model = Gen_Model(settings["generation"]["model"], os.getenv("API_KEY"))
 query_opt = QueryModel(settings["generation"]["model"], os.getenv("API_KEY_QUERY"))
@@ -48,25 +48,36 @@ def run_bench():
     bench.load_manifest("../data/benchmark/queries_manifest.json")
 
     ks = [1,3,5,10,15,20]
-    results_at_k = {}
+    lamdas = [0.0,0.1,0.2,0.4,0.8,1.0]
+    results_at_l = {}
 
-    for k in ks:
-        res_dict = {}
-        res_dict = bench.run_benchmark(k)
 
-        mean_precision = sum(qres for qres in res_dict["prec"]) / len(res_dict["prec"])
-        mean_recall= sum(qres for qres in res_dict["recall"]) / len(res_dict["recall"])
+    for l in lamdas:
+        bench.retriever.set_lambda(l)
+        results_at_k = {}
+        for k in ks:
+            res_dict = {}
+            res_dict = bench.run_benchmark(k)
 
-        print(f'-----------------   K = {k}  -------------------------')
-        print("Precision:  ", mean_precision)
-        print("Recall:  ", mean_recall)
-        print(f'------------------------------------------------------')
+            mean_precision = sum(qres for qres in res_dict["prec"]) / len(res_dict["prec"])
+            mean_recall= sum(qres for qres in res_dict["recall"]) / len(res_dict["recall"])
 
-        results_at_k[k] = (mean_precision,mean_recall)
+            print(f'-----------------   K = {k}  -------------------------')
+            print("Precision:  ", mean_precision)
+            print("Recall:  ", mean_recall)
+            print(f'------------------------------------------------------')
+
+            results_at_k[k] = (mean_precision,mean_recall)
+        results_at_l[l] = results_at_k
 
     print()
     print()
-    print(results_at_k)
+    print(results_at_l)
+    for l in lamdas:
+        print("lambda: ",l)
+        for k in ks:
+            print(f'Precision & Recall for {k}:     {results_at_l[l][k]}')
+        print()
 
 
 
